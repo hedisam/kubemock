@@ -14,8 +14,9 @@ FROM scratch
 
 USER 10001:10001
 
-ENV PORT="6443"
 ENV VERBOSE="enabled"
+
+EXPOSE 6443
 
 COPY --from=build /kube_server_bin /kube_server
 

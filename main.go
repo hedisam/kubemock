@@ -18,11 +18,6 @@ func main() {
 		logger.SetLevel(logrus.DebugLevel)
 	}
 
-	port := strings.TrimSpace(os.Getenv("PORT"))
-	if port == "" {
-		port = "6443"
-	}
-
 	kubeHandler := api.NewKubeHandler(logger)
 	mux := http.NewServeMux()
 	// this is an actual kube endpoint that is called by HC Vault
@@ -30,10 +25,11 @@ func main() {
 	// this is a custom endpoint that will be called directly by our unit tests to register a fake service account
 	// and generate a valid jwt token for it so that the jwt can later be validated by Vault via the login endpoint above.
 	mux.Handle("/api/v1/testing/serviceaccounts", http.HandlerFunc(kubeHandler.RegisterServiceAccountHandler))
+	mux.Handle("/api/v1/testing/health", http.HandlerFunc(kubeHandler.HealthHandler))
 	// handle the root endpoint for any unexpected request
 	mux.Handle("/", http.HandlerFunc(kubeHandler.RootHandler))
 
-	netAddr := "0.0.0.0:" + port
+	netAddr := "0.0.0.0:6443"
 	ln, err := net.Listen("tcp", netAddr)
 	if err != nil {
 		logger.WithField("net_addr", netAddr).WithError(err).Fatal("Could not start tcp listener")

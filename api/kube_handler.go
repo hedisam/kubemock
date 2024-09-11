@@ -46,6 +46,12 @@ func (s *KubeHandler) RootHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// HealthHandler is a health endpoint that can be called by unit tests to make sure the server is functioning.
+func (s *KubeHandler) HealthHandler(w http.ResponseWriter, r *http.Request) {
+	s.logger.WithField("request_url", r.URL).Debug("Kube auth server received health probe")
+	s.writeResponse(w, http.StatusOK, nil)
+}
+
 // RegisterServiceAccountHandler handles service account registration requests made directly by unit tests.
 func (s *KubeHandler) RegisterServiceAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
