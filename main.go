@@ -26,8 +26,10 @@ func main() {
 	// and generate a valid jwt token for it so that the jwt can later be validated by Vault via the login endpoint above.
 	mux.Handle("/api/v1/testing/serviceaccounts", http.HandlerFunc(kubeHandler.RegisterServiceAccountHandler))
 	mux.Handle("/api/v1/testing/health", http.HandlerFunc(kubeHandler.HealthHandler))
+	// reset endpoint to clean up service account registry before running a test
+	mux.Handle("/api/v1/testing/reset", http.HandlerFunc(kubeHandler.ResetHandler))
 	// handle the root endpoint for any unexpected request
-	mux.Handle("/", http.HandlerFunc(kubeHandler.RootHandler))
+	mux.Handle("/", http.HandlerFunc(kubeHandler.UnimplementedHandler))
 
 	netAddr := "0.0.0.0:6443"
 	ln, err := net.Listen("tcp", netAddr)
