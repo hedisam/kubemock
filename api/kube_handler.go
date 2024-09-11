@@ -29,7 +29,7 @@ type loginRequest struct {
 type KubeHandler struct {
 	logger                  *logrus.Logger
 	jwtToServiceAccountInfo map[string]serviceAccountInfo
-	mu                      *sync.RWMutex
+	mu                      sync.RWMutex
 }
 
 // NewKubeHandler creates and returns a new kube handler.
